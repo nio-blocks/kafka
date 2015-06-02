@@ -26,18 +26,19 @@ class KafkaProducer(KafkaBase):
 
     def process_signals(self, signals, input_id='default'):
         for signal in signals:
-            try:
-                if type(signal) is not bytes:
-                    signal = pickle.dumps(signal)
-            except:
-                self._logger.exception("Signal: {0} could not be serialized".
-                                       format(signal))
-                return
+            if self.connected:
+                try:
+                    if type(signal) is not bytes:
+                        signal = pickle.dumps(signal)
+                except:
+                    self._logger.exception(
+                        "Signal: {0} could not be serialized".format(signal))
+                    return
 
-            try:
-                self._producer.send_messages(self._encoded_topic, signal)
-            except:
-                self._logger.exception("Failure sending signal")
+                try:
+                    self._producer.send_messages(self._encoded_topic, signal)
+                except:
+                    self._logger.exception("Failure sending signal")
 
     def _connect(self):
         super()._connect()
