@@ -25,6 +25,7 @@ class KafkaProducer(KafkaBase):
         super().stop()
 
     def process_signals(self, signals, input_id='default'):
+        msgs = []
         for signal in signals:
             if self.connected:
                 try:
@@ -34,11 +35,15 @@ class KafkaProducer(KafkaBase):
                     self._logger.exception(
                         "Signal: {0} could not be serialized".format(signal))
                     return
+                msgs.append(signal)
+            else:
+                return
 
-                try:
-                    self._producer.send_messages(self._encoded_topic, signal)
-                except:
-                    self._logger.exception("Failure sending signal")
+        try:
+            if self.connected:
+                self._producer.send_messages(self._encoded_topic, *msgs)
+        except:
+            self._logger.exception("Failure sending signal")
 
     def _connect(self):
         super()._connect()
