@@ -67,9 +67,14 @@ class KafkaConsumer(KafkaBase):
     def _receive_messages(self):
         signals = []
         while not self._stop_message_loop_event.is_set():
-            # get kafka messages
-            messages = self._consumer.get_messages(count=self.max_msg_count,
-                                                   block=False)
+            try:
+                # get kafka messages
+                messages = self._consumer.get_messages(
+                    count=self.max_msg_count, block=False)
+            except Exception:
+                self._logger.exception("Failure getting kafka messages")
+                continue
+
             # if no timeout occurred, parse messages and convert to signals
             if messages:
                 for message in messages:
