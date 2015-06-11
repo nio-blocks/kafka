@@ -1,4 +1,3 @@
-import copy
 from kafka.consumer import SimpleConsumer
 from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT
 
@@ -6,7 +5,8 @@ from .kafka_base_block import KafkaBase
 
 from nio.common.discovery import Discoverable, DiscoverableType
 from nio.common.signal.base import Signal
-from nio.metadata.properties import StringProperty, IntProperty
+from nio.metadata.properties import StringProperty, IntProperty, \
+    VersionProperty
 from nio.modules.threading import spawn, Event
 
 
@@ -15,6 +15,7 @@ class KafkaConsumer(KafkaBase):
 
     """ A block for consuming Kafka messages
     """
+    version = VersionProperty(version='0.1.0')
     group = StringProperty(title='Group', default="", allow_none=False)
     # use Kafka 'reasonable' value for our own message gathering and
     # signal delivery
@@ -65,7 +66,6 @@ class KafkaConsumer(KafkaBase):
             return Signal(attrs)
 
     def _receive_messages(self):
-        signals = []
         while not self._stop_message_loop_event.is_set():
             try:
                 # get kafka messages
@@ -77,6 +77,7 @@ class KafkaConsumer(KafkaBase):
 
             # if no timeout occurred, parse messages and convert to signals
             if messages:
+                signals = []
                 for message in messages:
                     # parse and save every signal
                     try:
@@ -87,17 +88,9 @@ class KafkaConsumer(KafkaBase):
                         continue
                     signals.append(signal)
 
-                # send signals in one shot
-                self._send_signals(signals)
+                self.notify_signals(signals)
 
         self._logger.debug("Exiting message loop")
-
-    def _send_signals(self, signals):
-        if signals:
-            self._logger.debug("Notifying: '{0}' signals".format(len(signals)))
-
-            self.notify_signals(copy.deepcopy(signals))
-            signals.clear()
 
     def _connect(self):
         super()._connect()

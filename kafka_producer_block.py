@@ -4,12 +4,14 @@ from kafka.producer import SimpleProducer
 
 from .kafka_base_block import KafkaBase
 
+from nio.metadata.properties import VersionProperty
 from nio.common.discovery import Discoverable, DiscoverableType
 
 
 @Discoverable(DiscoverableType.block)
 class KafkaProducer(KafkaBase):
 
+    version = VersionProperty(version='0.1.0')
     """ A block for producing Kafka messages
     """
     def __init__(self):
