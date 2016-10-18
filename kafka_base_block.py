@@ -1,9 +1,11 @@
 from kafka import KafkaClient
 
-from nio.common.block.base import Block
-from nio.metadata.properties import StringProperty, IntProperty
+from nio.block.base import Block
+from nio.properties import StringProperty, IntProperty
+from nio.util.discovery import not_discoverable
 
 
+@not_discoverable
 class KafkaBase(Block):
 
     """ A block defining common Kafka functionality.
@@ -24,7 +26,7 @@ class KafkaBase(Block):
     def configure(self, context):
         super().configure(context)
 
-        if not len(self.topic):
+        if not len(self.topic()):
             raise ValueError("Topic cannot be empty")
 
         self._connect()
@@ -34,15 +36,15 @@ class KafkaBase(Block):
         super().stop()
 
     def _connect(self):
-        self._kafka = KafkaClient("{0}:{1}".format(self.host, self.port))
-        self._encoded_topic = self.topic.encode()
+        self._kafka = KafkaClient("{0}:{1}".format(self.host(), self.port()))
+        self._encoded_topic = self.topic().encode()
 
         # ensuring topic is valid
         try:
             self._kafka.ensure_topic_exists(self._encoded_topic)
         except Exception:
-            self._logger.exception("Topic: {0} does not exist".
-                                   format(self.topic))
+            self.logger.exception("Topic: {0} does not exist".
+                                   format(self.topic()))
             raise
 
     def _disconnect(self):

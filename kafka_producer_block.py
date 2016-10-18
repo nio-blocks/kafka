@@ -4,11 +4,11 @@ from kafka.producer import SimpleProducer
 
 from .kafka_base_block import KafkaBase
 
-from nio.metadata.properties import VersionProperty
-from nio.common.discovery import Discoverable, DiscoverableType
+from nio.properties import VersionProperty
+from nio.util.discovery import discoverable
 
 
-@Discoverable(DiscoverableType.block)
+@discoverable
 class KafkaProducer(KafkaBase):
 
     version = VersionProperty(version='0.1.0')
@@ -34,7 +34,7 @@ class KafkaProducer(KafkaBase):
                     if type(signal) is not bytes:
                         signal = pickle.dumps(signal)
                 except:
-                    self._logger.exception(
+                    self.logger.exception(
                         "Signal: {0} could not be serialized".format(signal))
                     return
                 msgs.append(signal)
@@ -45,7 +45,7 @@ class KafkaProducer(KafkaBase):
             if self.connected:
                 self._producer.send_messages(self._encoded_topic, *msgs)
         except:
-            self._logger.exception("Failure sending signal")
+            self.logger.exception("Failure sending signal")
 
     def _connect(self):
         super()._connect()
