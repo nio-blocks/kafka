@@ -1,3 +1,5 @@
+from threading import Event
+
 from kafka.consumer import SimpleConsumer
 from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT
 
@@ -6,7 +8,6 @@ from nio.properties import StringProperty, IntProperty, \
 from nio.signal.base import Signal
 from nio.util.discovery import discoverable
 from nio.util.threading.spawn import spawn
-from threading import Event
 
 from .kafka_base_block import KafkaBase
 

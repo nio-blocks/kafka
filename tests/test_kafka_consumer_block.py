@@ -1,6 +1,7 @@
 import logging
 from time import sleep
 from unittest.mock import Mock
+
 from kafka.common import OffsetAndMessage, Message
 
 from nio.testing.block_test_case import NIOBlockTestCase

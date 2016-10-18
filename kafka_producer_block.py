@@ -2,10 +2,10 @@ import pickle
 
 from kafka.producer import SimpleProducer
 
-from .kafka_base_block import KafkaBase
-
 from nio.properties import VersionProperty
 from nio.util.discovery import discoverable
+
+from .kafka_base_block import KafkaBase
 
 
 @discoverable

@@ -1,9 +1,9 @@
 import pickle
 
-from .kafka_producer_block import KafkaProducer
-
 from nio.properties import VersionProperty
 from nio.util.discovery import discoverable
+
+from .kafka_producer_block import KafkaProducer
 
 
 @discoverable

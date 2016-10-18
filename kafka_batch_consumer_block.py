@@ -1,10 +1,11 @@
 import pickle
+
 from kafka.consumer import SimpleConsumer
 
-from .kafka_consumer_block import KafkaConsumer
-
-from nio.util.discovery import discoverable
 from nio.properties import IntProperty, VersionProperty
+from nio.util.discovery import discoverable
+
+from .kafka_consumer_block import KafkaConsumer
 
 
 @discoverable

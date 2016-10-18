@@ -1,5 +1,5 @@
-import pickle
 import logging
+import pickle
 from unittest.mock import Mock
 
 from nio.signal.base import Signal
