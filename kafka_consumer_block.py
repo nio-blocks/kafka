@@ -1,16 +1,18 @@
+from threading import Event
+
 from kafka.consumer import SimpleConsumer
 from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT
 
+from nio.properties import StringProperty, IntProperty, \
+    VersionProperty
+from nio.signal.base import Signal
+from nio.util.discovery import discoverable
+from nio.util.threading.spawn import spawn
+
 from .kafka_base_block import KafkaBase
 
-from nio.common.discovery import Discoverable, DiscoverableType
-from nio.common.signal.base import Signal
-from nio.metadata.properties import StringProperty, IntProperty, \
-    VersionProperty
-from nio.modules.threading import spawn, Event
 
-
-@Discoverable(DiscoverableType.block)
+@discoverable
 class KafkaConsumer(KafkaBase):
 
     """ A block for consuming Kafka messages
@@ -34,10 +36,10 @@ class KafkaConsumer(KafkaBase):
     def configure(self, context):
         super().configure(context)
 
-        if not len(self.group):
+        if not len(self.group()):
             raise ValueError("Group cannot be empty")
 
-        self._encoded_group = self.group.encode()
+        self._encoded_group = self.group().encode()
         self._connect()
 
     def start(self):
@@ -70,9 +72,9 @@ class KafkaConsumer(KafkaBase):
             try:
                 # get kafka messages
                 messages = self._consumer.get_messages(
-                    count=self.max_msg_count, block=False)
+                    count=self.max_msg_count(), block=False)
             except Exception:
-                self._logger.exception("Failure getting kafka messages")
+                self.logger.exception("Failure getting kafka messages")
                 continue
 
             # if no timeout occurred, parse messages and convert to signals
@@ -83,14 +85,14 @@ class KafkaConsumer(KafkaBase):
                     try:
                         signal = self._parse_message(message)
                     except Exception:
-                        self._logger.exception("Failed to parse kafka message:"
+                        self.logger.exception("Failed to parse kafka message:"
                                                " '{0}'".format(message))
                         continue
                     signals.append(signal)
 
                 self.notify_signals(signals)
 
-        self._logger.debug("Exiting message loop")
+        self.logger.debug("Exiting message loop")
 
     def _connect(self):
         super()._connect()

@@ -1,7 +1,7 @@
 import logging
 from unittest.mock import Mock
 
-from nio.util.support.block_test_case import NIOBlockTestCase
+from nio.testing.block_test_case import NIOBlockTestCase
 
 from ..kafka_base_block import KafkaBase
 

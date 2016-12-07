@@ -1,13 +1,14 @@
 import pickle
+
 from kafka.consumer import SimpleConsumer
+
+from nio.properties import IntProperty, VersionProperty
+from nio.util.discovery import discoverable
 
 from .kafka_consumer_block import KafkaConsumer
 
-from nio.common.discovery import Discoverable, DiscoverableType
-from nio.metadata.properties import IntProperty, VersionProperty
 
-
-@Discoverable(DiscoverableType.block)
+@discoverable
 class KafkaBatchConsumer(KafkaConsumer):
 
     """ A block for consuming Kafka Batch messages sent from a
@@ -33,7 +34,7 @@ class KafkaBatchConsumer(KafkaConsumer):
 
                 self.notify_signals(signals)
 
-        self._logger.debug("Exiting message loop")
+        self.logger.debug("Exiting message loop")
 
     def _connect(self):
         super()._connect()

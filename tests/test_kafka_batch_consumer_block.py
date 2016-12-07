@@ -5,11 +5,10 @@ from unittest.mock import Mock
 
 from kafka.common import OffsetAndMessage, Message
 
+from nio.signal.base import Signal
+from nio.testing.block_test_case import NIOBlockTestCase
+
 from ..kafka_batch_consumer_block import KafkaBatchConsumer
-
-from nio.common.signal.base import Signal
-
-from nio.util.support.block_test_case import NIOBlockTestCase
 
 
 class TestKafkaBatchConsumer(NIOBlockTestCase):

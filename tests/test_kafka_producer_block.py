@@ -1,9 +1,9 @@
-import pickle
 import logging
+import pickle
 from unittest.mock import Mock
 
-from nio.common.signal.base import Signal
-from nio.util.support.block_test_case import NIOBlockTestCase
+from nio.signal.base import Signal
+from nio.testing.block_test_case import NIOBlockTestCase
 
 from ..kafka_producer_block import KafkaProducer
 
