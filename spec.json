@@ -1,0 +1,98 @@
+{
+  "nio/KafkaBase": {
+    "Version": "1.0.0",
+    "Category": "Communication",
+    "Properties": {
+      "host": {
+        "description": "Kafka server host."
+      },
+      "port": {
+        "description": "Kafka server port."
+      },
+      "topic": {
+        "description": "Topic to use."
+      }
+    },
+    "Description": "Defines common functionality to Kafka blocks.\nKafka blocks require running Kafka and Zookeeper servers\nsee: http://kafka.apache.org/documentation.html#quickstart",
+    "Output": "None",
+    "Input": "None",
+    "Commands": {},
+    "Miscellaneous": {
+      "Starting servers:": "bin/zookeeper-server-start.sh config/zookeeper.properties\nbin/kafka-server-start.sh config/server.properties\n**Important** In order for topics to be created automatically, Kafka server needs to be\nconfigured with setting 'auto.create.topics.enable' set to true.\nsee: https://kafka.apache.org/08/configuration.html"
+    },
+    "Dependencies": [
+      "-   [kafka-python](https://github.com/mumrah/kafka-python)"
+    ]
+  },
+  "nio/KafkaProducer": {
+    "Version": "1.0.0",
+    "Category": "Communication",
+    "Properties": {
+      "None": {
+        "description": "None"
+      }
+    },
+    "Dependencies": [
+      "-   [kafka-python](https://github.com/mumrah/kafka-python)"
+    ],
+    "Output": "None\nKafkaProducer",
+    "Input": "NIO signals.",
+    "Commands": {},
+    "Description": "A block that receives signals and sends them to Kafka server."
+  },
+  "nio/KafkaBatchConsumer": {
+    "Version": "1.0.0",
+    "Category": "Communication",
+    "Properties": {
+      "group": {
+        "description": "Group to consume Kafka messages from"
+      },
+      "msg_buffer_size": {
+        "description": "maximum length of buffer used to capture signals, this value cannot be smaller than size of all signals sent from KafkaBatchProducer"
+      }
+    },
+    "Description": "Consumes Kafka messages sent from a KafkaBatchProducer block",
+    "Output": "",
+    "Input": "Kafka message sent from a KafkaBatchProducer.",
+    "Miscellaneous": {
+      "Kafka message as a NIO signal.": "",
+      "Starting servers:": "bin/zookeeper-server-start.sh config/zookeeper.properties\nbin/kafka-server-start.sh config/server.properties\n**Important** In order for topics to be created automatically, Kafka server needs to be\nconfigured with setting 'auto.create.topics.enable' set to true.\nsee: https://kafka.apache.org/08/configuration.html"
+    },
+    "Commands": {},
+    "Dependencies": [
+      "-   [kafka-python](https://github.com/mumrah/kafka-python)"
+    ]
+  },
+  "nio/KafkaConsumer": {
+    "Version": "1.0.0",
+    "Category": "Communication",
+    "Properties": {
+      "group": {
+        "description": "Group to consume Kafka messages from"
+      }
+    },
+    "Description": "Consumes Kafka messages.",
+    "Output": "Kafka message as a NIO signal.",
+    "Input": "Kafka messages.",
+    "Commands": {},
+    "Dependencies": [
+      "-   [kafka-python](https://github.com/mumrah/kafka-python)"
+    ]
+  },
+  "nio/KafkaBatchProducer": {
+    "Version": "1.0.0",
+    "Category": "Communication",
+    "Properties": {
+      "None": {
+        "description": "None"
+      }
+    },
+    "Dependencies": [
+      "-   [kafka-python](https://github.com/mumrah/kafka-python)"
+    ],
+    "Output": "Kafka message as a NIO signal.\nKafkaBatchProducer",
+    "Input": "NIO signals.",
+    "Commands": {},
+    "Description": "A block that receives signals and sends them to Kafka server. This blocks\nuses Kafka infrastructure to send signals, in order to receive signals\nsuccessfully receiving block must be of type KafkaBatchConsumer"
+  }
+}

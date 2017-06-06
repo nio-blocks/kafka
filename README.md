@@ -41,7 +41,7 @@ Output
 ---------
 None
 
-----------------
+***
 
 KafkaProducer
 ===========
@@ -50,8 +50,7 @@ A block that receives signals and sends them to Kafka server.
 
 Properties
 --------------
-
--   None
+-   None: None
 
 Dependencies
 ----------------
@@ -66,8 +65,7 @@ Input
 -------
 NIO signals.
 
-
-----------------
+***
 
 KafkaConsumer
 ===========
@@ -96,7 +94,7 @@ Output
 ---------
 Kafka message as a NIO signal.
 
-----------------
+***
 
 KafkaBatchProducer
 ===========
@@ -108,7 +106,7 @@ successfully receiving block must be of type KafkaBatchConsumer
 Properties
 --------------
 
--   None
+-   None: None
 
 Dependencies
 ----------------
@@ -123,8 +121,7 @@ Input
 -------
 NIO signals.
 
-
-----------------
+***
 
 KafkaBatchConsumer
 ===========
