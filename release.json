@@ -1,9 +1,4 @@
 {
-  "nio/KafkaBase": {
-    "Reference": "github.com/nio-blocks/kafka.git@v1.0.0",
-    "Version": "1.0.0",
-    "Language": "Python"
-  },
   "nio/KafkaProducer": {
     "Reference": "github.com/nio-blocks/kafka.git@v1.0.0",
     "Version": "1.0.0",
