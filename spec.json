@@ -16,32 +16,6 @@
             "Description": "Kafka message as a NIO signal."
         }
     },
-    "nio/KafkaBase": {
-        "Commands": {},
-        "Input": {
-            "Description": "None"
-        },
-        "Version": "1.0.0",
-        "Category": "Communication",
-        "Miscellaneous": {
-            "Starting servers:": "bin/zookeeper-server-start.sh config/zookeeper.properties\nbin/kafka-server-start.sh config/server.properties\n**Important** In order for topics to be created automatically, Kafka server needs to be\nconfigured with setting 'auto.create.topics.enable' set to true.\nsee: https://kafka.apache.org/08/configuration.html"
-        },
-        "Description": "Defines common functionality to Kafka blocks.\nKafka blocks require running Kafka and Zookeeper servers\nsee: http://kafka.apache.org/documentation.html#quickstart",
-        "Properties": {
-            "port": {
-                "description": "Kafka server port."
-            },
-            "host": {
-                "description": "Kafka server host."
-            },
-            "topic": {
-                "description": "Topic to use."
-            }
-        },
-        "Output": {
-            "Description": "None"
-        }
-    },
     "nio/KafkaBatchConsumer": {
         "Commands": {},
         "Input": {
