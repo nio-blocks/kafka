@@ -1,77 +1,34 @@
 {
-    "nio/KafkaConsumer": {
-        "Commands": {},
-        "Input": {
-            "Description": "Kafka messages."
-        },
-        "Version": "1.0.0",
-        "Category": "Communication",
-        "Description": "Consumes Kafka messages.",
-        "Properties": {
-            "group": {
-                "description": "Group to consume Kafka messages from"
-            }
-        },
-        "Output": {
-            "Description": "Kafka message as a NIO signal."
-        }
-    },
-    "nio/KafkaBatchConsumer": {
-        "Commands": {},
-        "Input": {
-            "Description": "Kafka message sent from a KafkaBatchProducer."
-        },
-        "Version": "1.0.0",
-        "Category": "Communication",
-        "Miscellaneous": {
-            "Kafka message as a NIO signal.": "",
-            "Starting servers:": "bin/zookeeper-server-start.sh config/zookeeper.properties\nbin/kafka-server-start.sh config/server.properties\n**Important** In order for topics to be created automatically, Kafka server needs to be\nconfigured with setting 'auto.create.topics.enable' set to true.\nsee: https://kafka.apache.org/08/configuration.html"
-        },
-        "Description": "Consumes Kafka messages sent from a KafkaBatchProducer block",
-        "Properties": {
-            "group": {
-                "description": "Group to consume Kafka messages from"
-            },
-            "msg_buffer_size": {
-                "description": "maximum length of buffer used to capture signals, this value cannot be smaller than size of all signals sent from KafkaBatchProducer"
-            }
-        },
-        "Output": {
-            "Description": ""
-        }
-    },
-    "nio/KafkaBatchProducer": {
-        "Commands": {},
-        "Input": {
-            "Description": "NIO signals."
-        },
-        "Version": "1.0.0",
-        "Properties": {
-            "None": {
-                "description": "None"
-            }
-        },
-        "Category": "Communication",
-        "Description": "A block that receives signals and sends them to Kafka server. This blocks\nuses Kafka infrastructure to send signals, in order to receive signals\nsuccessfully receiving block must be of type KafkaBatchConsumer",
-        "Output": {
-            "Description": "Kafka message as a NIO signal.\nKafkaBatchProducer"
-        }
-    },
-    "nio/KafkaProducer": {
-        "Commands": {},
-        "Input": {
-            "Description": "NIO signals."
-        },
-        "Version": "1.0.0",
-        "Properties": {
-            "None": {
-                "description": "None"
-            }
-        },
-        "Category": "Communication",
-        "Description": "A block that receives signals and sends them to Kafka server.",
-        "Output": {
-            "Description": "None\nKafkaProducer"
-        }
-    }
+  "nio/KafkaBatchConsumer": {
+    "version": "0.0.1",
+    "description": "",
+    "inputs": {},
+    "outputs": {},
+    "properties": {},
+    "commands": {}
+  },
+  "nio/KafkaBatchProducer": {
+    "version": "0.0.1",
+    "description": "",
+    "inputs": {},
+    "outputs": {},
+    "properties": {},
+    "commands": {}
+  },
+  "nio/KafkaConsumer": {
+    "version": "0.0.1",
+    "description": "",
+    "inputs": {},
+    "outputs": {},
+    "properties": {},
+    "commands": {}
+  },
+  "nio/KafkaProducer": {
+    "version": "0.0.1",
+    "description": "",
+    "inputs": {},
+    "outputs": {},
+    "properties": {},
+    "commands": {}
+  }
 }
