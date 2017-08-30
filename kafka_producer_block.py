@@ -3,17 +3,15 @@ import pickle
 from kafka.producer import SimpleProducer
 
 from nio.properties import VersionProperty
-from nio.util.discovery import discoverable
 
 from .kafka_base_block import KafkaBase
 
 
-@discoverable
 class KafkaProducer(KafkaBase):
+    """ A block for producing Kafka messages """
 
     version = VersionProperty(version='0.1.0')
-    """ A block for producing Kafka messages
-    """
+
     def __init__(self):
         super().__init__()
         self._producer = None

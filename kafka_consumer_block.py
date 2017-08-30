@@ -1,18 +1,15 @@
 from threading import Event
-
 from kafka.consumer import SimpleConsumer
 from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT
 
 from nio.properties import StringProperty, IntProperty, \
     VersionProperty
 from nio.signal.base import Signal
-from nio.util.discovery import discoverable
 from nio.util.threading.spawn import spawn
 
 from .kafka_base_block import KafkaBase
 
 
-@discoverable
 class KafkaConsumer(KafkaBase):
 
     """ A block for consuming Kafka messages
@@ -86,7 +83,7 @@ class KafkaConsumer(KafkaBase):
                         signal = self._parse_message(message)
                     except Exception:
                         self.logger.exception("Failed to parse kafka message:"
-                                               " '{0}'".format(message))
+                                              " '{0}'".format(message))
                         continue
                     signals.append(signal)
 
