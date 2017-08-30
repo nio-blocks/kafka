@@ -1,17 +1,15 @@
 import pickle
 
 from nio.properties import VersionProperty
-from nio.util.discovery import discoverable
 
 from .kafka_producer_block import KafkaProducer
 
 
-@discoverable
 class KafkaBatchProducer(KafkaProducer):
+    """ A block for producing Kafka Batch messages """
 
     version = VersionProperty(version='0.1.0')
-    """ A block for producing Kafka Batch messages
-    """
+
     def process_signals(self, signals, input_id='default'):
         if self.connected:
             try:

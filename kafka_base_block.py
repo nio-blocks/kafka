@@ -43,8 +43,8 @@ class KafkaBase(Block):
         try:
             self._kafka.ensure_topic_exists(self._encoded_topic)
         except Exception:
-            self.logger.exception("Topic: {0} does not exist".
-                                   format(self.topic()))
+            self.logger.exception("Topic: {0} does not exist"
+                                  .format(self.topic()))
             raise
 
     def _disconnect(self):

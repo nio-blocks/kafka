@@ -1,34 +1,172 @@
 {
   "nio/KafkaBatchConsumer": {
-    "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "version": "0.1.0",
+    "description": "Consumes Kafka messages sent from a KafkaBatchProducer block.",
+    "properties": {
+      "group": {
+        "title": "Group",
+        "type": "StringType",
+        "description": "Group to consume Kafka messages from.",
+        "default": ""
+      },
+      "host": {
+        "title": "Host",
+        "type": "StringType",
+        "description": "Kafka server host.",
+        "default": "[[KAFKA_HOST]]"
+      },
+      "max_msg_count": {
+        "title": "Max message count",
+        "type": "IntType",
+        "description": "Max message count.",
+        "default": 100
+      },
+      "msg_buffer_size": {
+        "title": "Message Buffer Size",
+        "type": "IntType",
+        "description": "maximum length of buffer used to capture signals, this value cannot be smaller than size of all signals sent from KafkaBatchProducer",
+        "default": 1000000
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Kafka server port.",
+        "default": 9092
+      },
+      "topic": {
+        "title": "Topic",
+        "type": "StringType",
+        "description": "Topic to use.",
+        "default": ""
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Kafka message sent from a KafkaBatchProducer."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "Kafka message as a NIO signal."
+      }
+    },
     "commands": {}
   },
   "nio/KafkaBatchProducer": {
-    "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "version": "0.1.0",
+    "description": "A block that receives signals and sends them to Kafka server. This blocks uses Kafka infrastructure to send signals, in order to receive signals successfully receiving block must be of type KafkaBatchConsumer",
+    "properties": {
+      "host": {
+        "title": "Host",
+        "type": "StringType",
+        "description": "Kafka server host.",
+        "default": "[[KAFKA_HOST]]"
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Kafka server port.",
+        "default": 9092
+      },
+      "topic": {
+        "title": "Topic",
+        "type": "StringType",
+        "description": "Topic to use.",
+        "default": ""
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Any list of signals."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": ""
+      }
+    },
     "commands": {}
   },
   "nio/KafkaConsumer": {
-    "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "version": "0.1.0",
+    "description": "Consumes Kafka messages.",
+    "properties": {
+      "group": {
+        "title": "Group",
+        "type": "StringType",
+        "description": "Group to consume Kafka messages from.",
+        "default": ""
+      },
+      "host": {
+        "title": "Host",
+        "type": "StringType",
+        "description": "Kafka server host.",
+        "default": "[[KAFKA_HOST]]"
+      },
+      "max_msg_count": {
+        "title": "Max message count",
+        "type": "IntType",
+        "description": "Max message count.",
+        "default": 100
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Kafka server port.",
+        "default": 9092
+      },
+      "topic": {
+        "title": "Topic",
+        "type": "StringType",
+        "description": "Topic to use.",
+        "default": ""
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Kafka messages."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "Kafka message as a NIO signal."
+      }
+    },
     "commands": {}
   },
   "nio/KafkaProducer": {
-    "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "version": "0.1.0",
+    "description": "A block that receives signals and sends them to Kafka server.",
+    "properties": {
+      "host": {
+        "title": "Host",
+        "type": "StringType",
+        "description": "Kafka server host.",
+        "default": "[[KAFKA_HOST]]"
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Kafka server port.",
+        "default": 9092
+      },
+      "topic": {
+        "title": "Topic",
+        "type": "StringType",
+        "description": "Topic to use.",
+        "default": ""
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Any list of signals."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": ""
+      }
+    },
     "commands": {}
   }
 }

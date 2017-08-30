@@ -3,12 +3,10 @@ import pickle
 from kafka.consumer import SimpleConsumer
 
 from nio.properties import IntProperty, VersionProperty
-from nio.util.discovery import discoverable
 
 from .kafka_consumer_block import KafkaConsumer
 
 
-@discoverable
 class KafkaBatchConsumer(KafkaConsumer):
 
     """ A block for consuming Kafka Batch messages sent from a
