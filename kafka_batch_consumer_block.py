@@ -12,7 +12,7 @@ class KafkaBatchConsumer(KafkaConsumer):
     """ A block for consuming Kafka Batch messages sent from a
     KafkaBatchProducer
     """
-    version = VersionProperty(version='0.1.0')
+    version = VersionProperty("1.0.0")
     msg_buffer_size = IntProperty(title='Message Buffer Size',
                                   default=1000000,
                                   allow_none=False)

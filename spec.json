@@ -1,6 +1,6 @@
 {
   "nio/KafkaBatchConsumer": {
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Consumes Kafka messages sent from a KafkaBatchProducer block.",
     "properties": {
       "group": {
