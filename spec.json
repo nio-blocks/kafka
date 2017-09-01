@@ -135,7 +135,7 @@
     "commands": {}
   },
   "nio/KafkaProducer": {
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "A block that receives signals and sends them to Kafka server.",
     "properties": {
       "host": {
