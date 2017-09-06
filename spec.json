@@ -2,6 +2,9 @@
   "nio/KafkaBatchConsumer": {
     "version": "1.0.0",
     "description": "Consumes Kafka messages sent from a KafkaBatchProducer block.",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "group": {
         "title": "Group",
@@ -55,6 +58,9 @@
   "nio/KafkaBatchProducer": {
     "version": "1.0.0",
     "description": "A block that receives signals and sends them to Kafka server. This blocks uses Kafka infrastructure to send signals, in order to receive signals successfully receiving block must be of type KafkaBatchConsumer",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "host": {
         "title": "Host",
@@ -90,6 +96,9 @@
   "nio/KafkaConsumer": {
     "version": "1.0.0",
     "description": "Consumes Kafka messages.",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "group": {
         "title": "Group",
@@ -137,6 +146,9 @@
   "nio/KafkaProducer": {
     "version": "1.0.0",
     "description": "A block that receives signals and sends them to Kafka server.",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "host": {
         "title": "Host",
