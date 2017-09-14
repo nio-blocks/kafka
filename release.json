@@ -6,7 +6,7 @@
   },
   "nio/KafkaBatchProducer": {
     "language": "Python",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "url": "git://github.com/nio-blocks/kafka.git"
   },
   "nio/KafkaConsumer": {

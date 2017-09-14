@@ -56,7 +56,7 @@
     "commands": {}
   },
   "nio/KafkaBatchProducer": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A block that receives signals and sends them to Kafka server. This blocks uses Kafka infrastructure to send signals, in order to receive signals successfully receiving block must be of type KafkaBatchConsumer",
     "categories": [
       "Communication"
