@@ -10,7 +10,7 @@ from .kafka_base_block import KafkaBase
 class KafkaProducer(KafkaBase):
     """ A block for producing Kafka messages """
 
-    version = VersionProperty("1.0.0")
+    version = VersionProperty("1.0.1")
 
     def __init__(self):
         super().__init__()
