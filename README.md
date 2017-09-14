@@ -39,11 +39,7 @@ Properties
 
 Inputs
 ------
-- **default**: Any list of signals.
-
-Outputs
--------
-- **default**: 
+- **default**: A list of signals coming from a KafkaBatchConsumer block.
 
 Commands
 --------
@@ -94,10 +90,6 @@ Properties
 Inputs
 ------
 - **default**: Any list of signals.
-
-Outputs
--------
-- **default**: 
 
 Commands
 --------
