@@ -83,14 +83,10 @@
     },
     "inputs": {
       "default": {
-        "description": "Any list of signals."
+        "description": "A list of signals coming from a KafkaBatchConsumer block."
       }
     },
-    "outputs": {
-      "default": {
-        "description": ""
-      }
-    },
+    "outputs": {},
     "commands": {}
   },
   "nio/KafkaConsumer": {
@@ -174,11 +170,7 @@
         "description": "Any list of signals."
       }
     },
-    "outputs": {
-      "default": {
-        "description": ""
-      }
-    },
+    "outputs": {},
     "commands": {}
   }
 }
