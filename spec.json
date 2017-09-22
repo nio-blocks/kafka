@@ -50,7 +50,7 @@
     },
     "outputs": {
       "default": {
-        "description": "Kafka message as a NIO signal."
+        "description": "Kafka message as a nio signal."
       }
     },
     "commands": {}
