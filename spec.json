@@ -21,13 +21,13 @@
       "max_msg_count": {
         "title": "Max message count",
         "type": "IntType",
-        "description": "Max message count.",
+        "description": "Maximum message count.",
         "default": 100
       },
       "msg_buffer_size": {
         "title": "Message Buffer Size",
         "type": "IntType",
-        "description": "maximum length of buffer used to capture signals, this value cannot be smaller than size of all signals sent from KafkaBatchProducer",
+        "description": "Maximum length of buffer used to capture signals. This value cannot be smaller than the size of all signals sent from KafkaBatchProducer.",
         "default": 1000000
       },
       "port": {
@@ -57,7 +57,7 @@
   },
   "nio/KafkaBatchProducer": {
     "version": "1.0.1",
-    "description": "A block that receives signals and sends them to Kafka server. This blocks uses Kafka infrastructure to send signals, in order to receive signals successfully receiving block must be of type KafkaBatchConsumer",
+    "description": "A block that receives signals and sends them to the Kafka server. This blocks uses Kafka infrastructure to send signals. In order to receive signals successfully, there must be a receiving block of type KafkaBatchConsumer.",
     "categories": [
       "Communication"
     ],
@@ -111,7 +111,7 @@
       "max_msg_count": {
         "title": "Max message count",
         "type": "IntType",
-        "description": "Max message count.",
+        "description": "Maximum message count.",
         "default": 100
       },
       "port": {
@@ -134,14 +134,14 @@
     },
     "outputs": {
       "default": {
-        "description": "Kafka message as a NIO signal."
+        "description": "Kafka message as a nio signal."
       }
     },
     "commands": {}
   },
   "nio/KafkaProducer": {
     "version": "1.0.1",
-    "description": "A block that receives signals and sends them to Kafka server.",
+    "description": "A block that receives signals and sends them to the Kafka server.",
     "categories": [
       "Communication"
     ],
