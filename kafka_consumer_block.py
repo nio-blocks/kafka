@@ -11,7 +11,7 @@ from nio.util.threading.spawn import spawn
 from .kafka_base_block import KafkaBase
 
 
-class KafkaConsumer(GeneratorBlock, KafkaBase):
+class KafkaConsumer(KafkaBase, GeneratorBlock):
 
     """ A block for consuming Kafka messages
     """

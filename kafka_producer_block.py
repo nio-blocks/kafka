@@ -8,7 +8,7 @@ from nio.properties import VersionProperty
 from .kafka_base_block import KafkaBase
 
 
-class KafkaProducer(TerminatorBlock, KafkaBase):
+class KafkaProducer(KafkaBase, TerminatorBlock):
     """ A block for producing Kafka messages """
 
     version = VersionProperty("1.0.1")
