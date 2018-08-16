@@ -1,12 +1,12 @@
 from kafka import KafkaClient
 
-from nio.block.base import Block
+from nio.block.base import Base
 from nio.properties import StringProperty, IntProperty
 from nio.util.discovery import not_discoverable
 
 
 @not_discoverable
-class KafkaBase(Block):
+class KafkaBase(Base):
 
     """ A block defining common Kafka functionality.
     Properties:
