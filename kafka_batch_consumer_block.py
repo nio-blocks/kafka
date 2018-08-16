@@ -20,7 +20,7 @@ class KafkaBatchConsumer(KafkaConsumer):
     def _receive_messages(self):
         while not self._stop_message_loop_event.is_set():
             # get kafka messages
-            messages = self._consumer.get_messages(count=self.max_msg_count,
+            messages = self._consumer.get_messages(count=self.max_msg_count(),
                                                    block=False)
             # if no timeout occurred, gather NIO signals
             if messages:
@@ -39,5 +39,5 @@ class KafkaBatchConsumer(KafkaConsumer):
         self._consumer = SimpleConsumer(self._kafka,
                                         self._encoded_group,
                                         self._encoded_topic,
-                                        fetch_size_bytes=self.msg_buffer_size,
-                                        max_buffer_size=self.msg_buffer_size)
+                                        fetch_size_bytes=self.msg_buffer_size(),
+                                        max_buffer_size=self.msg_buffer_size())
