@@ -37,7 +37,7 @@ class KafkaBase(Block):
 
     def _connect(self):
         self._kafka = KafkaClient("{0}:{1}".format(self.host(), self.port()))
-        self._encoded_topic = self.topic().encode()
+        self._encoded_topic = self.topic()
 
         # ensuring topic is valid
         try:
