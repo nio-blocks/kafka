@@ -6,18 +6,18 @@ Properties
 ----------
 - **group**: Group to consume Kafka messages from.
 - **host**: Kafka server host.
-- **max_msg_count**: Max message count.
-- **msg_buffer_size**: maximum length of buffer used to capture signals, this value cannot be smaller than size of all signals sent from KafkaBatchProducer
+- **max_msg_count**: Maximum message count.
+- **msg_buffer_size**: Maximum length of buffer used to capture signals. This value cannot be smaller than the size of all signals sent from KafkaBatchProducer.
 - **port**: Kafka server port.
 - **topic**: Topic to use.
 
 Inputs
 ------
-- **default**: Kafka message sent from a KafkaBatchProducer.
+None
 
 Outputs
 -------
-- **default**: Kafka message as a NIO signal.
+- **default**: Kafka message as a nio signal.
 
 Commands
 --------
@@ -27,9 +27,11 @@ Dependencies
 ------------
 -   [kafka-python](https://github.com/mumrah/kafka-python)
 
+***
+
 KafkaBatchProducer
 ==================
-A block that receives signals and sends them to Kafka server. This blocks uses Kafka infrastructure to send signals, in order to receive signals successfully receiving block must be of type KafkaBatchConsumer
+A block that receives signals and sends them to the Kafka server. This blocks uses Kafka infrastructure to send signals. In order to receive signals successfully, there must be a receiving block of type KafkaBatchConsumer.
 
 Properties
 ----------
@@ -41,6 +43,10 @@ Inputs
 ------
 - **default**: A list of signals coming from a KafkaBatchConsumer block.
 
+Outputs
+-------
+None
+
 Commands
 --------
 None
@@ -48,6 +54,8 @@ None
 Dependencies
 ------------
 -   [kafka-python](https://github.com/mumrah/kafka-python)
+
+***
 
 KafkaConsumer
 =============
@@ -57,17 +65,17 @@ Properties
 ----------
 - **group**: Group to consume Kafka messages from.
 - **host**: Kafka server host.
-- **max_msg_count**: Max message count.
+- **max_msg_count**: Maximum message count.
 - **port**: Kafka server port.
 - **topic**: Topic to use.
 
 Inputs
 ------
-- **default**: Kafka messages.
+None
 
 Outputs
 -------
-- **default**: Kafka message as a NIO signal.
+- **default**: Kafka message as a nio signal.
 
 Commands
 --------
@@ -77,9 +85,11 @@ Dependencies
 ------------
 -   [kafka-python](https://github.com/mumrah/kafka-python)
 
+***
+
 KafkaProducer
 =============
-A block that receives signals and sends them to Kafka server.
+A block that receives signals and sends them to the Kafka server.
 
 Properties
 ----------
@@ -91,6 +101,10 @@ Inputs
 ------
 - **default**: Any list of signals.
 
+Outputs
+-------
+None
+
 Commands
 --------
 None
@@ -98,3 +112,4 @@ None
 Dependencies
 ------------
 -   [kafka-python](https://github.com/mumrah/kafka-python)
+

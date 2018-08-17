@@ -43,11 +43,7 @@
         "default": ""
       }
     },
-    "inputs": {
-      "default": {
-        "description": "Kafka message sent from a KafkaBatchProducer."
-      }
-    },
+    "inputs": {},
     "outputs": {
       "default": {
         "description": "Kafka message as a nio signal."
@@ -127,11 +123,7 @@
         "default": ""
       }
     },
-    "inputs": {
-      "default": {
-        "description": "Kafka messages."
-      }
-    },
+    "inputs": {},
     "outputs": {
       "default": {
         "description": "Kafka message as a nio signal."

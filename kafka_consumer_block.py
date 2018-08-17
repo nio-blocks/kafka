@@ -2,6 +2,7 @@ from threading import Event
 from kafka.consumer import SimpleConsumer
 from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT
 
+from nio import GeneratorBlock
 from nio.properties import StringProperty, IntProperty, \
     VersionProperty
 from nio.signal.base import Signal
@@ -10,7 +11,7 @@ from nio.util.threading.spawn import spawn
 from .kafka_base_block import KafkaBase
 
 
-class KafkaConsumer(KafkaBase):
+class KafkaConsumer(KafkaBase, GeneratorBlock):
 
     """ A block for consuming Kafka messages
     """
