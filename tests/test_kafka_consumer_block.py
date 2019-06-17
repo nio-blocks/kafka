@@ -1,5 +1,5 @@
 from time import sleep
-from unittest.mock import Mock
+from unittest.mock import patch, Mock
 
 from kafka.common import OffsetAndMessage, Message
 
@@ -79,31 +79,47 @@ class TestKafkaConsumer(NIOBlockTestCase):
         # assert that message loop thread joined and was reset to None
         self.assertIsNone(blk._message_loop_thread)
 
-    def test_fetch_size_configuration(self):
+    @patch(KafkaConsumer.__module__ + '.SimpleConsumer')
+    @patch('blocks.kafka.kafka_base_block.KafkaClient')
+    def test_fetch_size_configuration(self, MockClient, MockConsumer):
         # test implementation of fetch count, timeout, and max size options
         count = 42
         max_size = 8675309
         timeout = .314  # seconds
 
-        blk = KafkaConsumer()
-        self.assertIsNone(blk._consumer)
+        mock_client = Mock()
+        MockClient.return_value = mock_client
+        mock_consumer = Mock(return_value=[self._get_message()])
+        MockConsumer.return_value.get_messages = mock_consumer
 
-        blk._connect = Mock()
-        blk._consumer = Mock()
-        blk._consumer.get_messages = Mock(return_value=[self._get_message()])
+        blk = KafkaConsumer()
         self.configure_block(blk, {
             "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
             "max_msg_count": count,
+            "fetch_size": max_size,
             "timeout": timeout,
         })
 
+        args, kwargs = MockConsumer.call_args
+        self.assertEqual(
+            args,
+            (mock_client, b"test_group", "test_topic"))
+        self.assertDictEqual(
+            kwargs,
+            {
+                "fetch_size_bytes": max_size,
+                "buffer_size": max_size,
+                "max_buffer_size": max_size * 2**3,
+            })
+
         blk.start()
 
-        _, call_args = blk._consumer.get_messages.call_args
+        args, kwargs = blk._consumer.get_messages.call_args
+        self.assertEqual(args, ())
         self.assertDictEqual(
-            call_args,
+            kwargs,
             {
                 "block": False,  # static value
                 "count": count,

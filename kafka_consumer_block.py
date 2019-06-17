@@ -1,6 +1,7 @@
 from threading import Event
 from kafka.consumer import SimpleConsumer
-from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT, FETCH_MAX_WAIT_TIME
+from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT, FETCH_MAX_WAIT_TIME, \
+    FETCH_MIN_BYTES
 
 from nio import GeneratorBlock
 from nio.properties import StringProperty, IntProperty, FloatProperty, \
@@ -16,11 +17,13 @@ class KafkaConsumer(KafkaBase, GeneratorBlock):
     """ A block for consuming Kafka messages
     """
     version = VersionProperty("1.1.0")
-    group = StringProperty(title='Group', default="", allow_none=False)
+    group = StringProperty(title="Group", default="", allow_none=False)
     # use Kafka 'reasonable' value for our own message gathering and
     # signal delivery
-    max_msg_count = IntProperty(title='Max message count',
+    max_msg_count = IntProperty(title="Max message count",
                                 default=AUTO_COMMIT_MSG_COUNT)
+    fetch_size = IntProperty(title="Fetch Size (bytes)",
+                             default=FETCH_MIN_BYTES)
     timeout = FloatProperty(title="Timeout (seconds)",
                             default=FETCH_MAX_WAIT_TIME / 1000)
 
@@ -99,7 +102,10 @@ class KafkaConsumer(KafkaBase, GeneratorBlock):
         super()._connect()
         self._consumer = SimpleConsumer(self._kafka,
                                         self._encoded_group,
-                                        self._encoded_topic)
+                                        self._encoded_topic,
+                                        fetch_size_bytes=self.fetch_size(),
+                                        buffer_size=self.fetch_size(),
+                                        max_buffer_size=self.fetch_size() * 8)
 
     def _disconnect(self):
         if self._consumer:
