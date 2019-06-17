@@ -1,4 +1,3 @@
-import logging
 from time import sleep
 from unittest.mock import Mock
 
@@ -22,7 +21,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
             "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
-            "log_level": logging.DEBUG
         })
         self.assertTrue(blk._connect.called)
 
@@ -35,7 +33,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
             self.configure_block(blk, {
                 "host": "127.0.0.1",
                 "topic": "test_topic",
-                "log_level": logging.DEBUG
             })
 
     def test_stop(self):
@@ -48,7 +45,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
             "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
-            "log_level": logging.DEBUG
         })
         self.assertFalse(blk.connected)
         blk.start()
@@ -75,7 +71,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
             "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
-            "log_level": logging.DEBUG
         })
         blk.start()
         self.assertIsNotNone(blk._message_loop_thread)
