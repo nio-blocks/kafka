@@ -21,11 +21,14 @@ class KafkaConsumer(KafkaBase, GeneratorBlock):
     # use Kafka 'reasonable' value for our own message gathering and
     # signal delivery
     max_msg_count = IntProperty(title="Max message count",
-                                default=AUTO_COMMIT_MSG_COUNT)
+                                default=AUTO_COMMIT_MSG_COUNT,
+                                advanced=True)
     fetch_size = IntProperty(title="Fetch Size (bytes)",
-                             default=FETCH_MIN_BYTES)
+                             default=FETCH_MIN_BYTES,
+                             advanced=True)
     timeout = FloatProperty(title="Timeout (seconds)",
-                            default=FETCH_MAX_WAIT_TIME / 1000)
+                            default=FETCH_MAX_WAIT_TIME / 1000,
+                            advanced=True)
 
     def __init__(self):
         super().__init__()
