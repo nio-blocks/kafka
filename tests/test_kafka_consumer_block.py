@@ -79,6 +79,40 @@ class TestKafkaConsumer(NIOBlockTestCase):
         # assert that message loop thread joined and was reset to None
         self.assertIsNone(blk._message_loop_thread)
 
+    def test_fetch_size_configuration(self):
+        # test implementation of fetch count, timeout, and max size options
+        count = 42
+        max_size = 8675309
+        timeout = .314  # seconds
+
+        blk = KafkaConsumer()
+        self.assertIsNone(blk._consumer)
+
+        blk._connect = Mock()
+        blk._consumer = Mock()
+        blk._consumer.get_messages = Mock(return_value=[self._get_message()])
+        self.configure_block(blk, {
+            "host": "127.0.0.1",
+            "topic": "test_topic",
+            "group": "test_group",
+            "max_msg_count": count,
+            "timeout": timeout,
+        })
+
+        blk.start()
+
+        _, call_args = blk._consumer.get_messages.call_args
+        self.assertDictEqual(
+            call_args,
+            {
+                "block": False,  # static value
+                "count": count,
+                "timeout": timeout,
+            })
+
+        blk.stop()
+
+
     def _test_connect(self):
         # make consumer to call our get_messages
         self._blk._consumer = self

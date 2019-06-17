@@ -1,9 +1,9 @@
 from threading import Event
 from kafka.consumer import SimpleConsumer
-from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT
+from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT, FETCH_MAX_WAIT_TIME
 
 from nio import GeneratorBlock
-from nio.properties import StringProperty, IntProperty, \
+from nio.properties import StringProperty, IntProperty, FloatProperty, \
     VersionProperty
 from nio.signal.base import Signal
 from nio.util.threading.spawn import spawn
@@ -20,8 +20,9 @@ class KafkaConsumer(KafkaBase, GeneratorBlock):
     # use Kafka 'reasonable' value for our own message gathering and
     # signal delivery
     max_msg_count = IntProperty(title='Max message count',
-                                default=AUTO_COMMIT_MSG_COUNT,
-                                allow_none=False)
+                                default=AUTO_COMMIT_MSG_COUNT)
+    timeout = FloatProperty(title="Timeout (seconds)",
+                            default=FETCH_MAX_WAIT_TIME / 1000)
 
     def __init__(self):
         super().__init__()
@@ -70,7 +71,9 @@ class KafkaConsumer(KafkaBase, GeneratorBlock):
             try:
                 # get kafka messages
                 messages = self._consumer.get_messages(
-                    count=self.max_msg_count(), block=False)
+                    count=self.max_msg_count(),
+                    block=False,
+                    timeout=self.timeout())
             except Exception:
                 self.logger.exception("Failure getting kafka messages")
                 continue
