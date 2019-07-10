@@ -1,21 +1,30 @@
 from kafka import KafkaClient
 
 from nio.block.base import Base
-from nio.properties import StringProperty, IntProperty
+from nio.properties import StringProperty, IntProperty, ListProperty, \
+    PropertyHolder
 from nio.util.discovery import not_discoverable
 
+
+class Hosts(PropertyHolder):
+    host = StringProperty(title='Host', default='[[KAFKA_HOST]]')
+    port = IntProperty(title='Port', default=9092)
 
 @not_discoverable
 class KafkaBase(Base):
 
     """ A block defining common Kafka functionality.
     Properties:
-        host (str): location of the database
+        hosts (list): location of the database
         port (int): open port served by database
         topic (str): topic name
     """
-    host = StringProperty(title='Host', default='[[KAFKA_HOST]]')
-    port = IntProperty(title='Port', default=9092)
+    hosts = ListProperty(Hosts, title='Kafka Hosts', default=[
+        {
+            'host': '[[KAFKA_HOST]]',
+            'port': 9092,
+        }
+    ])
     topic = StringProperty(title='Topic', default="", allow_none=False)
 
     def __init__(self):
@@ -36,7 +45,10 @@ class KafkaBase(Base):
         super().stop()
 
     def _connect(self):
-        self._kafka = KafkaClient("{0}:{1}".format(self.host(), self.port()))
+        hosts_list = []
+        for host in self.hosts():
+            hosts_list.append('{}:{}'.format(host.host(), host.port()))
+        self._kafka = KafkaClient(hosts_list)
         self._encoded_topic = self.topic()
 
         # ensuring topic is valid

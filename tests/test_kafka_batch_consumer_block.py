@@ -21,7 +21,6 @@ class TestKafkaBatchConsumer(NIOBlockTestCase):
         blk._connect = Mock(side_effect=self._test_connect)
         blk._disconnect = Mock()
         self.configure_block(blk,   {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
             "log_level": logging.DEBUG

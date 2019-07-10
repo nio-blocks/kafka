@@ -11,7 +11,7 @@ from .kafka_base_block import KafkaBase
 class KafkaProducer(KafkaBase, TerminatorBlock):
     """ A block for producing Kafka messages """
 
-    version = VersionProperty("1.0.1")
+    version = VersionProperty("2.0.0")
 
     def __init__(self):
         super().__init__()

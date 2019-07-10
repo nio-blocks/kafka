@@ -20,7 +20,6 @@ class TestKafkaBatchProducer(NIOBlockTestCase):
         blk._producer = Mock()
         self._topic = "test_topic"
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": self._topic,
             "log_level": logging.DEBUG
         })

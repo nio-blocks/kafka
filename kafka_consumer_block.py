@@ -16,7 +16,7 @@ class KafkaConsumer(KafkaBase, GeneratorBlock):
 
     """ A block for consuming Kafka messages
     """
-    version = VersionProperty("1.1.0")
+    version = VersionProperty("2.0.0")
     group = StringProperty(title="Group", default="", allow_none=False)
     # use Kafka 'reasonable' value for our own message gathering and
     # signal delivery

@@ -1,5 +1,5 @@
 import logging
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from nio.testing.block_test_case import NIOBlockTestCase
 
@@ -47,3 +47,20 @@ class TestKafkaBase(NIOBlockTestCase):
         blk.stop()
 
         self.assertTrue(blk._disconnect.called)
+
+    @patch(KafkaBase.__module__ + '.KafkaClient')
+    def test_hosts_list(self, mock_client):
+        hosts = [
+            {'host': 'foo', 'port': 0},
+            {'host': 'bar', 'port': 1},
+            {'host': 'baz', 'port': 2},
+        ]
+        blk = KafkaBase()
+        self.configure_block(blk, {
+            'hosts': hosts,
+            'topic': 'test',
+        })
+        hosts_list = []
+        for host in hosts:
+            hosts_list.append('{}:{}'.format(host['host'], host['port']))
+        mock_client.assert_called_once_with(hosts_list)

@@ -18,7 +18,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
 
         blk._connect = Mock()
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
         })
@@ -31,7 +30,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
         blk._connect = Mock()
         with self.assertRaises(ValueError):
             self.configure_block(blk, {
-                "host": "127.0.0.1",
                 "topic": "test_topic",
             })
 
@@ -42,7 +40,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
         blk._connect = Mock()
         blk._disconnect = Mock()
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
         })
@@ -68,7 +65,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
         blk._connect = Mock(side_effect=self._test_connect)
         blk._disconnect = Mock()
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
         })
@@ -94,7 +90,6 @@ class TestKafkaConsumer(NIOBlockTestCase):
 
         blk = KafkaConsumer()
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "group": "test_group",
             "max_msg_count": count,

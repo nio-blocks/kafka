@@ -18,7 +18,6 @@ class TestKafkaProducer(NIOBlockTestCase):
 
         blk._connect = Mock()
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "log_level": logging.DEBUG
         })
@@ -31,7 +30,6 @@ class TestKafkaProducer(NIOBlockTestCase):
         blk._connect = Mock()
         blk._disconnect = Mock()
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": "test_topic",
             "log_level": logging.DEBUG
         })
@@ -51,7 +49,6 @@ class TestKafkaProducer(NIOBlockTestCase):
         blk._producer = Mock()
         self._topic = "test_topic"
         self.configure_block(blk, {
-            "host": "127.0.0.1",
             "topic": self._topic,
             "log_level": logging.DEBUG
         })
