@@ -25,7 +25,22 @@ class KafkaBase(Base):
             'port': 9092,
         }
     ])
-    topic = StringProperty(title='Topic', default="", allow_none=False)
+    topic = StringProperty(title='Topic', default='')
+    ssl_cafile = StringProperty(
+        title='SSL CA File',
+        allow_none=True,
+        advanced=True,
+        order=1)
+    ssl_certfile = StringProperty(
+        title='SSL Certificate File',
+        allow_none=True,
+        advanced=True,
+        order=2)
+    ssl_keyfile = StringProperty(
+        title='SSL Private Key File',
+        allow_none=True,
+        advanced=True,
+        order=3)
 
     def __init__(self):
         super().__init__()
@@ -48,7 +63,12 @@ class KafkaBase(Base):
         hosts_list = []
         for host in self.hosts():
             hosts_list.append('{}:{}'.format(host.host(), host.port()))
-        self._kafka = KafkaClient(hosts_list)
+        self._kafka = KafkaClient(
+            bootstrap_servers=hosts_list,
+            # make sure that empty strings are replaced with None
+            ssl_cafile=self.ssl_cafile() if self.ssl_cafile() else None,
+            ssl_certfile=self.ssl_certfile() if self.ssl_certfile() else None,
+            ssl_keyfile=self.ssl_keyfile() if self.ssl_keyfile() else None)
         self._encoded_topic = self.topic()
 
         # ensuring topic is valid

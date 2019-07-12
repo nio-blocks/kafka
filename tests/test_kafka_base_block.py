@@ -63,4 +63,30 @@ class TestKafkaBase(NIOBlockTestCase):
         hosts_list = []
         for host in hosts:
             hosts_list.append('{}:{}'.format(host['host'], host['port']))
-        mock_client.assert_called_once_with(hosts_list)
+        mock_client.assert_called_once_with(
+            bootstrap_servers=hosts_list,
+            ssl_cafile=None,
+            ssl_certfile=None,
+            ssl_keyfile=None)
+
+    @patch(KafkaBase.__module__ + '.KafkaClient')
+    def test_ssl(self, mock_client):
+        hosts = [
+            {'host': 'foo', 'port': 0},
+        ]
+        blk = KafkaBase()
+        self.configure_block(blk, {
+            'hosts': hosts,
+            'topic': 'test',
+            'ssl_cafile': '/path/to/ca',
+            'ssl_certfile': '/path/to/cert',
+            'ssl_keyfile': '/path/to/priv_key',
+        })
+        hosts_list = []
+        for host in hosts:
+            hosts_list.append('{}:{}'.format(host['host'], host['port']))
+        mock_client.assert_called_once_with(
+            bootstrap_servers=hosts_list,
+            ssl_cafile='/path/to/ca',
+            ssl_certfile='/path/to/cert',
+            ssl_keyfile='/path/to/priv_key')
