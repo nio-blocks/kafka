@@ -69,7 +69,7 @@ class KafkaConsumer(GeneratorBlock):
         super().stop()
 
     def _parse_message(self, message):
-        self.logger.debug('Got message: {}'.format(message.message.value))
+        self.logger.debug('Got message: {}'.format(message))
         signal = dict()
         signal['key'] = message.key
         signal['offset'] = message.offset
