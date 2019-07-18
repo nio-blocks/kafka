@@ -43,7 +43,6 @@ class KafkaConsumer(GeneratorBlock):
         super().configure(context)
         kwargs = {}
         kwargs['consumer_timeout_ms'] = 100
-        kwargs['value_deserializer'] = self._parse_message
         if self.group() is not None:
             kwargs['group_id'] = self.group()
         servers = []
@@ -83,10 +82,8 @@ class KafkaConsumer(GeneratorBlock):
         while not self._stop_message_loop_event.is_set():
             try:
                 for message in self._consumer:
-                    self.notify_signals([message])
+                    self.notify_signals([self._parse_message(message)])
             except StopIteration:
                 # consumer_timeout_ms has elapsed without a message
                 continue
-            except:
-                self.logger.exception('Failed to fetch messages')
         self.logger.debug('Stopped message loop.')
