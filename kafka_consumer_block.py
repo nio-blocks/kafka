@@ -1,8 +1,8 @@
 from threading import Event
 from kafka import KafkaConsumer as Consumer
 from nio import GeneratorBlock
-from nio.properties import StringProperty, IntProperty, FloatProperty, \
-    ListProperty, PropertyHolder, VersionProperty
+from nio.properties import StringProperty, IntProperty, ListProperty, \
+    PropertyHolder, VersionProperty
 from nio import Signal
 from nio.util.threading.spawn import spawn
 
@@ -30,7 +30,11 @@ class KafkaConsumer(GeneratorBlock):
             },
         ],
         order=2)
-    version = VersionProperty('3.0.0')
+    max_records = IntProperty(
+        title='Max records per poll',
+        defaul=500,
+        order=3)
+    version = VersionProperty('3.1.0')
 
     def __init__(self):
         super().__init__()
@@ -42,7 +46,6 @@ class KafkaConsumer(GeneratorBlock):
     def configure(self, context):
         super().configure(context)
         kwargs = {}
-        kwargs['consumer_timeout_ms'] = 100
         if self.group() is not None:
             kwargs['group_id'] = self.group()
         servers = []
@@ -68,7 +71,6 @@ class KafkaConsumer(GeneratorBlock):
         super().stop()
 
     def _parse_message(self, message):
-        self.logger.debug('Got message: {}'.format(message))
         signal = dict()
         signal['key'] = message.key
         signal['offset'] = message.offset
@@ -80,10 +82,16 @@ class KafkaConsumer(GeneratorBlock):
     def _receive_messages(self):
         self.logger.debug('Started message loop.')
         while not self._stop_message_loop_event.is_set():
-            try:
-                for message in self._consumer:
-                    self.notify_signals([self._parse_message(message)])
-            except StopIteration:
-                # consumer_timeout_ms has elapsed without a message
-                continue
+            messages = self._consumer.poll(
+                timeout_ms=100,
+                max_records=self.max_records())
+            for topic, batch in messages.items():
+                # notify one list of signals per topic
+                signals = []
+                for message in batch:
+                    signals.append(self._parse_message(message))
+                self.logger.debug(
+                    'Notifying {} Signals from topic \"{}\"'.format(
+                        len(signals), topic))
+                self.notify_signals(signals)
         self.logger.debug('Stopped message loop.')
