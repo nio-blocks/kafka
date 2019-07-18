@@ -1,121 +1,92 @@
 from threading import Event
-from kafka.consumer import SimpleConsumer
-from kafka.consumer.base import AUTO_COMMIT_MSG_COUNT, FETCH_MAX_WAIT_TIME, \
-    FETCH_MIN_BYTES
-
+from kafka import KafkaConsumer as Consumer
 from nio import GeneratorBlock
 from nio.properties import StringProperty, IntProperty, FloatProperty, \
-    VersionProperty
-from nio.signal.base import Signal
+    ListProperty, PropertyHolder, VersionProperty
+from nio import Signal
 from nio.util.threading.spawn import spawn
 
-from .kafka_base_block import KafkaBase
+
+class Servers(PropertyHolder):
+    host = StringProperty(title='Host', default='[[KAFKA_HOST]]')
+    port = IntProperty(title='Port', default=9092)
 
 
-class KafkaConsumer(KafkaBase, GeneratorBlock):
+class KafkaConsumer(GeneratorBlock):
 
-    """ A block for consuming Kafka messages
-    """
-    version = VersionProperty("2.0.0")
-    group = StringProperty(title="Group", default="", allow_none=False)
-    # use Kafka 'reasonable' value for our own message gathering and
-    # signal delivery
-    max_msg_count = IntProperty(title="Max message count",
-                                default=AUTO_COMMIT_MSG_COUNT,
-                                advanced=True)
-    fetch_size = IntProperty(title="Fetch Size (bytes)",
-                             default=FETCH_MIN_BYTES,
-                             advanced=True)
-    timeout = FloatProperty(title="Timeout (seconds)",
-                            default=FETCH_MAX_WAIT_TIME / 1000,
-                            advanced=True)
+    topic = StringProperty(title='Topic', order=0)
+    group = StringProperty(
+        title='Group',
+        default=None,
+        allow_none=True,
+        order=1)
+    servers = ListProperty(
+        Servers,
+        title='Kafka Servers',
+        default=[
+            {
+                'host': '[[KAFKA_HOST]]',
+                'port': 9092,
+            },
+        ],
+        order=2)
+    version = VersionProperty('3.0.0')
 
     def __init__(self):
         super().__init__()
         self._consumer = None
-        self._encoded_group = None
         # message loop maintenance
         self._stop_message_loop_event = None
         self._message_loop_thread = None
 
     def configure(self, context):
         super().configure(context)
-
-        if not len(self.group()):
-            raise ValueError("Group cannot be empty")
-
-        self._encoded_group = self.group().encode()
-        self._connect()
+        kwargs = {}
+        kwargs['consumer_timeout_ms'] = 100
+        kwargs['value_deserializer'] = self._parse_message
+        if self.group() is not None:
+            kwargs['group_id'] = self.group()
+        servers = []
+        for server in self.servers():
+            servers.append('{}:{}'.format(server.host(), server.port()))
+        kwargs['bootstrap_servers'] = servers
+        self.logger.debug(
+            'Creating Consumer for \"{}\"...'.format(self.topic()))
+        self._consumer = Consumer(self.topic(), kwargs)
+        self.logger.debug('Created Consumer with kwargs: {}'.format(kwargs))
 
     def start(self):
         super().start()
-        # start gathering messages
+        self.logger.debug('Starting message loop...')
         self._stop_message_loop_event = Event()
         self._message_loop_thread = spawn(self._receive_messages)
 
     def stop(self):
-        # stop gathering messages
+        self.logger.debug('Stopping message loop...')
         self._stop_message_loop_event.set()
         self._message_loop_thread.join()
         self._message_loop_thread = None
-
-        # disconnect
-        self._disconnect()
         super().stop()
 
     def _parse_message(self, message):
-            attrs = dict()
-            attrs["magic"] = message.message.magic
-            attrs["attributes"] = message.message.attributes
-            attrs["key"] = message.message.key
-            attrs["value"] = message.message.value
-
-            return Signal(attrs)
+        self.logger.debug('Got message: {}'.format(message.message.value))
+        signal = dict()
+        signal['key'] = message.key
+        signal['offset'] = message.offset
+        signal['partition'] = message.partition
+        signal['topic'] = message.topic
+        signal['value'] = message.value
+        return Signal(signal)
 
     def _receive_messages(self):
+        self.logger.debug('Started message loop.')
         while not self._stop_message_loop_event.is_set():
             try:
-                # get kafka messages
-                messages = self._consumer.get_messages(
-                    count=self.max_msg_count(),
-                    block=False,
-                    timeout=self.timeout())
-            except Exception:
-                self.logger.exception("Failure getting kafka messages")
+                for message in self._consumer:
+                    self.notify_signals([message])
+            except StopIteration:
+                # consumer_timeout_ms has elapsed without a message
                 continue
-
-            # if no timeout occurred, parse messages and convert to signals
-            if messages:
-                signals = []
-                for message in messages:
-                    # parse and save every signal
-                    try:
-                        signal = self._parse_message(message)
-                    except Exception:
-                        self.logger.exception("Failed to parse kafka message:"
-                                              " '{0}'".format(message))
-                        continue
-                    signals.append(signal)
-
-                self.notify_signals(signals)
-
-        self.logger.debug("Exiting message loop")
-
-    def _connect(self):
-        super()._connect()
-        self._consumer = SimpleConsumer(self._kafka,
-                                        self._encoded_group,
-                                        self._encoded_topic,
-                                        fetch_size_bytes=self.fetch_size(),
-                                        buffer_size=self.fetch_size(),
-                                        max_buffer_size=self.fetch_size() * 8)
-
-    def _disconnect(self):
-        if self._consumer:
-            self._consumer.stop()
-            self._consumer = None
-        super()._disconnect()
-
-    @property
-    def connected(self):
-        return super().connected and self._consumer
+            except:
+                self.logger.exception('Failed to fetch messages')
+        self.logger.debug('Stopped message loop.')
