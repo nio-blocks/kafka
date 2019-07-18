@@ -46,6 +46,7 @@ class KafkaConsumer(GeneratorBlock):
     def configure(self, context):
         super().configure(context)
         kwargs = {}
+        kwargs['api_version'] = (0, 10)
         if self.group() is not None:
             kwargs['group_id'] = self.group()
         servers = []
