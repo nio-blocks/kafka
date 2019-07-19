@@ -1,17 +1,26 @@
-import pickle
-
-from kafka.producer import SimpleProducer
-
+import json
+from kafka import KafkaProducer as Producer
 from nio import TerminatorBlock
-from nio.properties import VersionProperty
+from nio.properties import IntProperty, ListProperty, PropertyHolder, \
+    StringProperty, VersionProperty
 
-from .kafka_base_block import KafkaBase
+
+class Servers(PropertyHolder):
+    host = StringProperty(title='Host', default='[[KAFKA_HOST]]')
+    port = IntProperty(title='Port', default=9092)
 
 
-class KafkaProducer(KafkaBase, TerminatorBlock):
+class KafkaProducer(TerminatorBlock):
     """ A block for producing Kafka messages """
 
-    version = VersionProperty("2.0.0")
+    servers = ListProperty(Servers, title='Kafka Servers', default=[
+        {
+            'host': '[[KAFKA_HOST]]',
+            'port': 9092,
+        }
+    ])
+    topic = StringProperty(title='Topic')
+    version = VersionProperty('3.0.0')
 
     def __init__(self):
         super().__init__()
@@ -19,43 +28,21 @@ class KafkaProducer(KafkaBase, TerminatorBlock):
 
     def configure(self, context):
         super().configure(context)
-        self._connect()
+        servers = []
+        for server in self.servers():
+            host = '{}:{}'.format(server.host(), server.port())
+            servers.append(host)
+        self._producer = Producer(
+            bootstrap_servers=servers)
 
     def stop(self):
-        self._disconnect()
+        self._producer = None
         super().stop()
 
-    def process_signals(self, signals, input_id='default'):
-        msgs = []
+    def process_signals(self, signals):
         for signal in signals:
-            if self.connected:
-                try:
-                    if type(signal) is not bytes:
-                        signal = pickle.dumps(signal)
-                except:
-                    self.logger.exception(
-                        "Signal: {0} could not be serialized".format(signal))
-                    return
-                msgs.append(signal)
-            else:
-                return
-
-        try:
-            if self.connected:
-                self._producer.send_messages(self._encoded_topic, *msgs)
-        except:
-            self.logger.exception("Failure sending signal")
-
-    def _connect(self):
-        super()._connect()
-        self._producer = SimpleProducer(self._kafka)
-
-    def _disconnect(self):
-        if self._producer:
-            self._producer.stop()
-            self._producer = None
-        super()._disconnect()
-
-    @property
-    def connected(self):
-        return super().connected and self._producer
+            signal_dict = signal.to_dict()
+            message = json.dumps(signal_dict)
+            message_bytes = message.encode('ascii')
+            self._producer.send(self.topic(), message_bytes)
+        self._producer.flush()
