@@ -34,7 +34,7 @@ class KafkaConsumer(GeneratorBlock):
         title='Max records per poll',
         defaul=500,
         order=3)
-    version = VersionProperty('3.2.0')
+    version = VersionProperty('3.1.0')
 
     def __init__(self):
         super().__init__()
