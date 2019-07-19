@@ -11,7 +11,6 @@ class TestKafkaProducer(NIOBlockTestCase):
     def test_producer(self, mock_producer):
         blk = KafkaProducer()
         self.assertIsNone(blk._producer)
-
         self.configure_block(blk, {
             'topic': 'test',
             'servers': [
@@ -24,10 +23,14 @@ class TestKafkaProducer(NIOBlockTestCase):
                     'port': 321,
                 },
             ],
-            'log_level': 'DEBUG',
         })
-        mock_producer.assert_called_once_with(
-            bootstrap_servers=['foo:123', 'bar:321'])
+        # mock_producer.assert_called_once_with(
+        #     bootstrap_servers=['foo:123', 'bar:321'],
+        #     ssl_cafile=None,
+        #     ssl_check_hostname=True)
+        self.assertEqual(
+            mock_producer.call_args[1]['bootstrap_servers'],
+            ['foo:123', 'bar:321'])
         self.assertEqual(blk._producer, mock_producer.return_value)
         blk.start()
         blk.process_signals([
@@ -44,55 +47,39 @@ class TestKafkaProducer(NIOBlockTestCase):
         blk.stop()
         self.assertIsNone(blk._producer)
 
-    # def test_stop(self):
-    #     # asserts that connect/disconnect calls are made from expected places
-    #
-    #     blk = KafkaProducer()
-    #     blk._connect = Mock()
-    #     blk._disconnect = Mock()
-    #     self.configure_block(blk, {
-    #         "topic": "test_topic",
-    #         "log_level": logging.DEBUG
-    #     })
-    #     self.assertFalse(blk.connected)
-    #     blk.start()
-    #     blk.stop()
-    #
-    #     self.assertTrue(blk._disconnect.called)
-    #
-    # def test_process_signals(self):
-    #     # asserts that signal processing executes and message itself is
-    #     # serialized as expected
-    #
-    #     blk = KafkaProducer()
-    #     blk._connect = Mock()
-    #     blk._disconnect = Mock()
-    #     blk._producer = Mock()
-    #     self._topic = "test_topic"
-    #     self.configure_block(blk, {
-    #         "topic": self._topic,
-    #         "log_level": logging.DEBUG
-    #     })
-    #     self.assertFalse(blk.connected)
-    #     blk.start()
-    #     # Trick it into thinking we're connected
-    #     blk._kafka = True
-    #     blk._producer.send_messages = Mock(side_effect=self.send_messages)
-    #     self.assertTrue(blk.connected)
-    #     self._signal_to_send = Signal({"field1": "field1_data"})
-    #     self._signal_received = False
-    #     blk.process_signals([self._signal_to_send])
-    #     self.assertTrue(blk._producer.send_messages.called)
-    #     blk.stop()
-    #     self.assertTrue(blk._disconnect.called)
-    #     self.assertTrue(self._signal_received)
-    #
-    # def send_messages(self, topic, signal):
-    #     self._signal_received = True
-    #     # verify that signal is sent as bytes
-    #     self.assertTrue(isinstance(signal, bytes))
-    #     # verify topic is sent "encoded"
-    #     self.assertEqual(topic, self._topic.encode())
-    #     # "reverse engineer" signal and verify
-    #     received_signal = pickle.loads(signal)
-    #     self.assertEqual(received_signal, self._signal_to_send)
+    @patch(KafkaProducer.__module__ + '.Producer')
+    def test_ssl_options(self, mock_producer):
+        blk = KafkaProducer()
+        self.configure_block(blk, {
+            'topic': 'test',
+            'ssl': {
+                'ssl_check_hostname': False,
+                'ssl_cafile': '/path/to/ca',
+                'ssl_certfile': '/path/to/cert',
+                'ssl_keyfile': '/path/to/key'
+            },
+        })
+        mock_producer.assert_called_once_with(
+            bootstrap_servers=['[[KAFKA_HOST]]:9092'],
+            ssl_cafile='/path/to/ca',
+            ssl_certfile='/path/to/cert',
+            ssl_keyfile='/path/to/key',
+            ssl_check_hostname=False)
+
+    @patch(KafkaProducer.__module__ + '.Producer')
+    def test_special_cases_ssl_options(self, mock_producer):
+        blk = KafkaProducer()
+        self.configure_block(blk, {
+            'topic': 'test',
+            'ssl': {
+                'ssl_cafile': '',  # designer may send emtpy string as None
+                'ssl_certfile': '',  # designer may send emtpy string as None
+                'ssl_keyfile': '',  # designer may send emtpy string as None
+            },
+        })
+        mock_producer.assert_called_once_with(
+            bootstrap_servers=['[[KAFKA_HOST]]:9092'],
+            ssl_cafile=None,
+            ssl_certfile=None,
+            ssl_keyfile=None,
+            ssl_check_hostname=True)
