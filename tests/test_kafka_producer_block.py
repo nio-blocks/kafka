@@ -1,5 +1,5 @@
 import logging
-import pickle
+import json
 from unittest.mock import Mock
 
 from nio.signal.base import Signal
@@ -48,6 +48,8 @@ class TestKafkaProducer(NIOBlockTestCase):
         blk._disconnect = Mock()
         blk._producer = Mock()
         self._topic = "test_topic"
+        # since _connect is mocked, set encoded_topic here
+        blk._encoded_topic = self._topic
         self.configure_block(blk, {
             "topic": self._topic,
             "log_level": logging.DEBUG
@@ -71,7 +73,7 @@ class TestKafkaProducer(NIOBlockTestCase):
         # verify that signal is sent as bytes
         self.assertTrue(isinstance(signal, bytes))
         # verify topic is sent "encoded"
-        self.assertEqual(topic, self._topic.encode())
+        self.assertEqual(topic, self._topic)
         # "reverse engineer" signal and verify
-        received_signal = pickle.loads(signal)
+        received_signal = Signal(json.loads(signal.decode('utf-8')))
         self.assertEqual(received_signal, self._signal_to_send)

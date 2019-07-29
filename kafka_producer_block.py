@@ -1,4 +1,4 @@
-import pickle
+import json
 
 from kafka.producer import SimpleProducer
 
@@ -28,23 +28,15 @@ class KafkaProducer(KafkaBase, TerminatorBlock):
     def process_signals(self, signals, input_id='default'):
         msgs = []
         for signal in signals:
-            if self.connected:
-                try:
-                    if type(signal) is not bytes:
-                        signal = pickle.dumps(signal)
-                except:
-                    self.logger.exception(
-                        "Signal: {0} could not be serialized".format(signal))
-                    return
-                msgs.append(signal)
-            else:
-                return
-
-        try:
-            if self.connected:
-                self._producer.send_messages(self._encoded_topic, *msgs)
-        except:
-            self.logger.exception("Failure sending signal")
+                signal_dict = signal.to_dict()
+                signal_json = json.dumps(signal_dict)
+                encoded_json = signal_json.encode('utf-8')
+                msgs.append(encoded_json)
+        if self.connected:
+            self._producer.send_messages(self._encoded_topic, *msgs)
+        else:
+            self.logger.warning(
+                'not connected! dropping {} messages'.format(len(msgs)))
 
     def _connect(self):
         super()._connect()
